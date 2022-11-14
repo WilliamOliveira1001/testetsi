@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tsi</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <script>
+      var db = openDatabase("Meubanco", "2.0", "Mybase", 4048);
+      db.transaction(function (criar) {
+        criar.executeSql(
+          "CREATE TABLE users (ID PRIMARY KEY, nome TEXT, senha TEXT)"
+        );
+      });
+
+      function salvar() {
+        var nome = document.getElementById("user").value;
+        var senha = document.getElementById("message").value;
+        console.log(nome);
+        db.transaction(function (armazenar) {
+          armazenar.executeSql("INSERT INTO users(nome, senha) VALUES (?,?)", [
+            nome,
+            senha,
+          ]);
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <app-root> </app-root>
+    <header class="header">
+      <h2>Chat</h2>
+    </header>
+    <main class="chat">
+      <div class="container">
+        <div class="chat-container">
+          <div class="card">
+            <ul class="list-group">
+              <li
+                class="list-group-item"
+                *ngFor="let chatMessage of webSocketService.chatMessage"
+              >
+                <strong>{{chatMessage.user}}</strong>
+                <span> {{ chatMessage.message}}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <form
+        onsubmit="salvar()"
+        (ngSubmit)="sendMenssage(sendForm)"
+        #sendForm="ngForm"
+      >
+        <div class="chat-send">
+          <div class="col-1 div">
+            <input
+              type="text"
+              class="form-control"
+              name="user"
+              id="user"
+              ngModel
+            />
+          </div>
+          <div class="col-2 div">
+            <input
+              type="text"
+              class="form-control"
+              name="message"
+              id="message"
+              ngModel
+            />
+          </div>
+          <div class="col-3 div">
+            <button type="submit" class="btn">Enviar</button>
+          </div>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>
